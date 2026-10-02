@@ -17,19 +17,6 @@ jobs:
           node-version: "24"
       # Pick your own package manager and build script
       - run: pnpm install
-      - name: Update generated README
-        # Run the project's update script and push README changes without triggering CI
-        run: |
-          node ./app/utils/update-readme.ts || true
-          if [ -n "$(git status --porcelain)" ]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add README.md || true
-            git commit -m "chore: update README [skip ci]" || true
-            git push origin HEAD:${{ github.ref_name }} || true
-          else
-            echo "No README changes"
-          fi
       - name: Build site
         env:
           NUXT_PUBLIC_APP_BASE_URL: ${{ vars.NUXT_PUBLIC_APP_BASE_URL }}
