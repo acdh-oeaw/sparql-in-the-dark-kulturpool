@@ -1,0 +1,15 @@
+label: Subject type - predicate - object type (Kulturpool)
+mode: endpoint
+source: https://sparql.kulturpool.at/query
+prefixes: |-
+query: |-
+  SELECT DISTINCT ?st ?p ?ot (COUNT(*) as ?cnt)
+  WHERE
+  {
+    ?s ?p ?o.
+    ?s a ?st. ?o a ?ot.
+  }
+  GROUP BY ?st ?p ?ot
+  ORDER BY DESC(?cnt)
+
+
