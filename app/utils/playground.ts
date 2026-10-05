@@ -1,6 +1,6 @@
 import type { RouteLocationRaw } from "vue-router";
 
-/** Strips the ordering prefix from an example file name, e.g. `examples/2_dbpedia` → `dbpedia`. */
+/** Strips the ordering prefix from an example file name, e.g. `examples/1_kulturpool` → `kulturpool`. */
 export function getExampleId(stem: string): string {
 	const name = stem.split("/").pop() ?? stem;
 	return name.replace(/^\d+_/u, "");
@@ -8,7 +8,7 @@ export function getExampleId(stem: string): string {
 
 /**
  * Reads the opt-in `playground` flag from a code fence's info string (the text after the backticks,
- * e.g. ```` ```sparql playground=dbpedia_dump ````). Returns the example id whose data source to
+ * e.g. ```` ```sparql playground=kulturpool ````). Returns the example id whose data source to
  * use, an empty string for a bare `playground` (default data source), or `undefined` if absent.
  */
 export function getPlaygroundExample(fenceInfo: string): string | undefined {

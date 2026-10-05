@@ -1,0 +1,21 @@
+label: Objects and providers (Kulturpool)
+mode: endpoint
+source: https://sparql.kulturpool.at/query
+prefixes: |-
+  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX edm: <http://www.europeana.eu/schemas/edm/>
+  PREFIX dc: <http://purl.org/dc/elements/1.1/>
+  PREFIX dcterms: <http://purl.org/dc/terms/>
+  PREFIX gnd: <https://d-nb.info/gnd/>
+  PREFIX ore: <http://www.openarchives.org/ore/terms/>
+  PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+  PREFIX id: <https://id.kulturpool.at/>
+query: |-
+  SELECT ?cho ?title ?provider
+  WHERE {
+    ?aggregation edm:aggregatedCHO ?cho ;
+                 edm:dataProvider ?provider .
+    ?cho dc:title ?title .
+  }
+  LIMIT 10

@@ -50,7 +50,7 @@ const lessonTransformer = defineTransformer({
 
 			if (!codeMatch || codeMatch.length > 2) return { ...document, ...meta };
 
-			// Opt-in "Run in playground" button, e.g. ```sparql playground=dbpedia_dump
+			// Opt-in "Run in playground" button, e.g. ```sparql playground=kulturpool
 			const fenceInfo = /```([^\n]*)\n/.exec(header)?.[1] ?? "";
 			const playground = getPlaygroundExample(fenceInfo);
 

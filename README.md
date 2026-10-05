@@ -3,21 +3,23 @@
 **Patterns for Exploring Kulturpool's Knowledge Graphs**
 
 ## Introduction
+
 This repository contains a collection of SPARQL queries for exploring Kulturpool.
 
 ## Contributing
+
 In order to contribute a chapter, add a markdown file to [content/queries](./content/queries), following the same structure as the existing chapters.
 
 ### Chapter files
 
-Each chapter is a single markdown file, e.g. `6_my_chapter.md`. The numeric prefix defines the order in which chapters appear. Start the file with a `# Title` heading and a short introduction, then build the chapter from *lessons*.
+Each chapter is a single markdown file, e.g. `6_my_chapter.md`. The numeric prefix defines the order in which chapters appear. Start the file with a `# Title` heading and a short introduction, then build the chapter from _lessons_.
 
 A lesson consists of a query followed by a series of explanatory steps. Two separator lines, each on a line of its own, structure the file:
 
-| Syntax | Meaning |
-| ------ | ------- |
-| `===` | Starts a new lesson. Everything between two `===` lines is one lesson. |
-| `---` | Starts a new step within a lesson. |
+| Syntax | Meaning                                                                |
+| ------ | ---------------------------------------------------------------------- |
+| `===`  | Starts a new lesson. Everything between two `===` lines is one lesson. |
+| `---`  | Starts a new step within a lesson.                                     |
 
 Each lesson has this layout:
 
@@ -32,13 +34,19 @@ where {
 ```
 
 ---
+
 <!-- highlight: 3 -->
+
 ## Step title
+
 Explanation of the highlighted part of the query.
 
 ---
+
 <!-- highlight: 1, 2-3 -->
+
 ## Another step
+
 Explanation of another part.
 
 ===
@@ -71,19 +79,21 @@ Add `playground` to the info string of the code fence to show a "Run in playgrou
 
 ````markdown
 ```sparql playground
+
 ```
 
-```sparql playground=dbpedia_dump
+```sparql playground=kulturpool
+
 ```
 ````
 
-A bare `playground` uses the playground's default data source. `playground=<id>` opens the query with the data source of the matching example in [content/examples](./content/examples), where `<id>` is the example's file name without the number prefix and extension (e.g. `dbpedia_dump` for `4_dbpedia_dump.yml`). Queries without the flag are display-only.
+A bare `playground` uses the playground's default data source. `playground=<id>` opens the query with the data source of the matching example in [content/examples](./content/examples), where `<id>` is the example's file name without the number prefix and extension (e.g. `kulturpool` for `1_kulturpool.yml`). Queries without the flag are display-only.
 
 ### Adding an example
 
-Examples are the data sources and starter queries offered in the playground; they are also what `playground=<id>` in a chapter refers to (see above). To add one, create a YAML file in [content/examples](./content/examples), e.g. `5_my_example.yml`.
+Examples are the data sources and starter queries offered in the playground; they are also what `playground=<id>` in a chapter refers to (see above). To add one, create a YAML file in [content/examples](./content/examples), e.g. `2_my_example.yml`.
 
-The numeric prefix defines the order in the playground's example list. It is stripped to form the example's id (`5_my_example.yml` → `my_example`).
+The numeric prefix defines the order in the playground's example list; the first example is loaded when the playground opens without a `?example=` parameter. The prefix is stripped to form the example's id (`2_my_example.yml` → `my_example`).
 
 Every example needs a `label` (the name shown in the playground), a `mode` and a starter `query`. `prefixes` is optional and is shown in the playground's prefixes editor, separate from the query.
 
@@ -92,49 +102,48 @@ There are two modes:
 **`mode: endpoint`** queries a remote SPARQL endpoint, given as `source`:
 
 ```yaml
-label: Cats (Wikidata)
+label: Objects and providers (Kulturpool)
 mode: endpoint
-source: https://query.wikidata.org/sparql
+source: https://sparql.kulturpool.at/query
 prefixes: |-
-  PREFIX wd: <http://www.wikidata.org/entity/>
-  PREFIX wdt: <http://www.wikidata.org/prop/direct/>
-  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX edm: <http://www.europeana.eu/schemas/edm/>
+  PREFIX dc: <http://purl.org/dc/elements/1.1/>
 query: |-
-  SELECT ?item ?label WHERE {
-    ?item wdt:P31 wd:Q146 ;
-          rdfs:label ?label .
-    FILTER(LANG(?label) = "en")
+  SELECT ?cho ?title ?provider
+  WHERE {
+    ?aggregation edm:aggregatedCHO ?cho ;
+                 edm:dataProvider ?provider .
+    ?cho dc:title ?title .
   }
-  LIMIT 20
+  LIMIT 10
 ```
 
-**`mode: rdf`** loads an RDF document and queries it in the browser. Put the file in [public/data](./public/data) and reference it with `dataUrl` (a path starting with `/data/`). Set `mediaType` to the file's format, e.g. `text/turtle`:
+**`mode: rdf`** loads an RDF document and queries it in the browser. Put the file in `public/data` and reference it with `dataUrl` (a path starting with `/data/`). Set `mediaType` to the file's format, e.g. `text/turtle`:
 
 ```yaml
-label: Austria (DBpedia dump)
+label: My records (Turtle file)
 mode: rdf
 mediaType: text/turtle
-dataUrl: /data/sample-data.ttl
+dataUrl: /data/my-records.ttl
 prefixes: |-
-  PREFIX dbo: <http://dbpedia.org/ontology/>
-  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX edm: <http://www.europeana.eu/schemas/edm/>
+  PREFIX dc: <http://purl.org/dc/elements/1.1/>
 query: |-
-  SELECT ?city ?name ?population WHERE {
-    ?city a dbo:City ;
-          rdfs:label ?name ;
-          dbo:populationTotal ?population .
+  SELECT ?cho ?title WHERE {
+    ?cho a edm:ProvidedCHO ;
+         dc:title ?title .
   }
 ```
 
-| Field | Required | Description |
-| ----- | -------- | ----------- |
-| `label` | yes | Display name in the playground. |
-| `mode` | yes | `endpoint` or `rdf`. |
-| `query` | yes | The query shown when the example is selected. |
-| `source` | for `endpoint` | URL of the SPARQL endpoint. |
-| `dataUrl` | for `rdf` | URL of the RDF document to load. |
-| `mediaType` | for `rdf` | Media type of that document, e.g. `text/turtle`. |
-| `prefixes` | no | `PREFIX` declarations for the prefixes editor. |
+| Field       | Required       | Description                                      |
+| ----------- | -------------- | ------------------------------------------------ |
+| `label`     | yes            | Display name in the playground.                  |
+| `mode`      | yes            | `endpoint` or `rdf`.                             |
+| `query`     | yes            | The query shown when the example is selected.    |
+| `source`    | for `endpoint` | URL of the SPARQL endpoint.                      |
+| `dataUrl`   | for `rdf`      | URL of the RDF document to load.                 |
+| `mediaType` | for `rdf`      | Media type of that document, e.g. `text/turtle`. |
+| `prefixes`  | no             | `PREFIX` declarations for the prefixes editor.   |
 
 Use `|-` for the multi-line `prefixes` and `query` values, so the text is kept as written without a trailing newline.
 

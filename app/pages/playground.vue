@@ -31,27 +31,15 @@ const examples = computed(() => {
 type Example = (typeof examples.value)[number];
 
 const commonPrefixes = [
-	// DBpedia
-	{ prefix: "dbo", iri: "http://dbpedia.org/ontology/" },
-	{ prefix: "dbr", iri: "http://dbpedia.org/resource/" },
-	{ prefix: "dbp", iri: "http://dbpedia.org/property/" },
-	// Wikidata
-	{ prefix: "wd", iri: "http://www.wikidata.org/entity/" },
-	{ prefix: "wdt", iri: "http://www.wikidata.org/prop/direct/" },
-	{ prefix: "p", iri: "http://www.wikidata.org/prop/" },
-	{ prefix: "ps", iri: "http://www.wikidata.org/prop/statement/" },
-	{ prefix: "pq", iri: "http://www.wikidata.org/prop/qualifier/" },
-	{ prefix: "wikibase", iri: "http://wikiba.se/ontology#" },
-	{ prefix: "bd", iri: "http://www.bigdata.com/rdf#" },
-	// Vocabularies
 	{ prefix: "rdf", iri: "http://www.w3.org/1999/02/22-rdf-syntax-ns#" },
 	{ prefix: "rdfs", iri: "http://www.w3.org/2000/01/rdf-schema#" },
-	{ prefix: "owl", iri: "http://www.w3.org/2002/07/owl#" },
-	{ prefix: "skos", iri: "http://www.w3.org/2004/02/skos/core#" },
-	{ prefix: "xsd", iri: "http://www.w3.org/2001/XMLSchema#" },
+	{ prefix: "edm", iri: "http://www.europeana.eu/schemas/edm/" },
+	{ prefix: "dc", iri: "http://purl.org/dc/elements/1.1/" },
 	{ prefix: "dcterms", iri: "http://purl.org/dc/terms/" },
-	{ prefix: "foaf", iri: "http://xmlns.com/foaf/0.1/" },
-	{ prefix: "schema", iri: "https://schema.org/" },
+	{ prefix: "gnd", iri: "https://d-nb.info/gnd/" },
+	{ prefix: "ore", iri: "http://www.openarchives.org/ore/terms/" },
+	{ prefix: "skos", iri: "http://www.w3.org/2004/02/skos/core#" },
+	{ prefix: "id", iri: "https://id.kulturpool.at/" },
 ] as const;
 
 const mediaTypes = [
@@ -64,7 +52,7 @@ const mediaTypes = [
 ] as const;
 
 const sourceMode = ref<SourceMode>("endpoint");
-const source = ref("https://dbpedia.org/sparql");
+const source = ref("https://sparql.kulturpool.at/query");
 const rdfData = ref("");
 const rdfMediaType = ref("text/turtle");
 const prefixes = ref("");
@@ -369,7 +357,7 @@ function onKeydown(event: KeyboardEvent) {
 				<input
 					v-model="source"
 					class="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 font-mono text-sm text-neutral-800 transition-colors outline-none placeholder:text-neutral-400 focus:border-primary/50 dark:border-white/10 dark:bg-[#151928] dark:text-slate-200 dark:placeholder:text-slate-600"
-					placeholder="https://dbpedia.org/sparql"
+					placeholder="https://sparql.kulturpool.at/query"
 					spellcheck="false"
 					type="url"
 				/>
