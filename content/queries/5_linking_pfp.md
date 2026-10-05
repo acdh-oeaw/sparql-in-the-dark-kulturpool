@@ -1,8 +1,8 @@
-# Linking to the PFP
+# Linking to PFP
 
 The [Prosopographical Research Platform Austria (PFP)](https://www.oeaw.ac.at/de/acdh/forschung/dh-forschung-infrastruktur/aktivitaeten/dh-datenmodellierung/pfp-prosopographische-plattform-oesterreich) of the Austrian Centre for Digital Humanities brings together information about persons from several prosopographical databases, e.g. the *Österreichisches Biographisches Lexikon* (ÖBL) and the *PMB – Personen der Moderne*. Like Kulturpool, it refers to persons by their GND IRIs, so the two graphs can be joined on them, just like Kulturpool and Wikidata in the previous chapter.
 
-The following query looks up persons named *Klimt* in the PFP and finds the Kulturpool objects they created:
+The following query looks up persons named *Klimt* in PFP and finds the Kulturpool objects they created:
 
 ```sparql playground=kulturpool
 prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -43,26 +43,26 @@ limit 50
 ## Kulturpool Objects
 The first part is a familiar pattern: every CHO in Kulturpool with its title and creator.
 
-On its own, this pattern would match a huge number of objects. It's the join with the PFP part below that narrows it down.
+On its own, this pattern would match a huge number of objects. It's the join with PFP part below that narrows it down.
 
 ---
 <!-- highlight: 15-29 -->
-## A Subquery for the PFP
-The second part is a subquery. SPARQL evaluates subqueries on their own, so the PFP part produces a small table of persons, which is then joined with the Kulturpool objects.
+## A Subquery for PFP
+The second part is a subquery. SPARQL evaluates subqueries on their own, so PFP part produces a small table of persons, which is then joined with the Kulturpool objects.
 
-Unlike in the Wikidata chapter, the selection happens on the remote side here: the PFP decides which persons are of interest, Kulturpool contributes their objects.
+Unlike in the Wikidata chapter, the selection happens on the remote side here: PFP decides which persons are of interest, Kulturpool contributes their objects.
 
 ---
 <!-- highlight: 18 -->
 ## Federation
-The SERVICE clause sends the enclosed pattern to the triple store of the PFP.
+The SERVICE clause sends the enclosed pattern to the triple store of PFP.
 
 See [SPARQL 1.1 Federated Query](https://www.w3.org/TR/sparql11-federated-query/).
 
 ---
 <!-- highlight: 19-22 -->
-## Persons in the PFP
-The PFP describes persons with [CIDOC CRM](https://cidoc-crm.org), where a person is a `crm:E21_Person`.
+## Persons in PFP
+PFP describes persons with [CIDOC CRM](https://cidoc-crm.org), where a person is a `crm:E21_Person`.
 
 Each source database contributes its own record of a person, a so-called *proxy*. Proxies carry a name (`rdfs:label`), links to other identifiers (`owl:sameAs`: GND, Wikidata, DOIs, …) and, with `pfp:proxy_for`, the UUID of the PFP person they stand for. Gustav Klimt, for example, has proxies from both the ÖBL and the PMB, which share one UUID.
 
@@ -79,7 +79,7 @@ A proxy usually has several `owl:sameAs` links. Only GND IRIs can be joined with
 ---
 <!-- highlight: 25 -->
 ## Building IRIs
-`BIND` assigns the result of an expression to a new variable. Here, `concat` puts the PFP UUID into a URL of the PFP API, and `uri` turns the string into an IRI. Opening it returns everything the PFP knows about the person, as JSON.
+`BIND` assigns the result of an expression to a new variable. Here, `concat` puts the PFP UUID into a URL of the PFP API, and `uri` turns the string into an IRI. Opening it returns everything PFP knows about the person, as JSON.
 
 See [Assignment](https://www.w3.org/TR/sparql12-query/#assignment) in the SPARQL 1.2 specification.
 
@@ -93,7 +93,7 @@ All other variables have to be aggregated in a grouped query. `sample` picks any
 ---
 <!-- highlight: 13, 16 -->
 ## Joining on the GND
-`?gndCreator` occurs in both parts of the query, so a Kulturpool object only matches if its `dc:creator` is the GND IRI of one of the persons found in the PFP.
+`?gndCreator` occurs in both parts of the query, so a Kulturpool object only matches if its `dc:creator` is the GND IRI of one of the persons found in PFP.
 
 Objects whose creator is given as plain text can't match. That's why this query finds no works from the Belvedere, which, as seen in the introduction, gives its creators as names.
 
