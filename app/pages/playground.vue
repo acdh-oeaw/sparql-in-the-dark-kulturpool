@@ -30,18 +30,6 @@ const examples = computed(() => {
 });
 type Example = (typeof examples.value)[number];
 
-const commonPrefixes = [
-	{ prefix: "rdf", iri: "http://www.w3.org/1999/02/22-rdf-syntax-ns#" },
-	{ prefix: "rdfs", iri: "http://www.w3.org/2000/01/rdf-schema#" },
-	{ prefix: "edm", iri: "http://www.europeana.eu/schemas/edm/" },
-	{ prefix: "dc", iri: "http://purl.org/dc/elements/1.1/" },
-	{ prefix: "dcterms", iri: "http://purl.org/dc/terms/" },
-	{ prefix: "gnd", iri: "https://d-nb.info/gnd/" },
-	{ prefix: "ore", iri: "http://www.openarchives.org/ore/terms/" },
-	{ prefix: "skos", iri: "http://www.w3.org/2004/02/skos/core#" },
-	{ prefix: "id", iri: "https://id.kulturpool.at/" },
-] as const;
-
 const mediaTypes = [
 	{ label: "Turtle", value: "text/turtle", highlight: "turtle" },
 	{ label: "N-Triples", value: "application/n-triples", highlight: "turtle" },
@@ -63,21 +51,7 @@ const isPrefixesCollapsed = ref(false);
 
 /** Appends every common prefix that isn't declared yet, so repeat clicks are a no-op. */
 function addCommonPrefixes() {
-	const declared = new Set(
-		[...prefixes.value.matchAll(/^\s*PREFIX\s+([^\s:]*):/gimu)].map((match) => {
-			return match[1];
-		}),
-	);
-	const missing = commonPrefixes.filter((entry) => {
-		return !declared.has(entry.prefix);
-	});
-	if (missing.length === 0) return;
-
-	const lines = missing.map((entry) => {
-		return `PREFIX ${entry.prefix}: <${entry.iri}>`;
-	});
-	const existing = prefixes.value.replace(/\s+$/u, "");
-	prefixes.value = existing ? `${existing}\n${lines.join("\n")}` : lines.join("\n");
+	prefixes.value = withCommonPrefixes(prefixes.value);
 	isPrefixesCollapsed.value = false;
 }
 const isLoadingExample = ref(false);
@@ -248,11 +222,13 @@ function selectExample(example: Example) {
 
 /**
  * Initialises the editors from the URL: `?example=<id>` picks the data source (and default
- * query), `?query=<sparql>` overrides the query, e.g. when coming from a chapter.
+ * query), `?query=<sparql>` overrides the query, e.g. when coming from a chapter, and
+ * `?prefixes=default` adds the common prefixes to the ones the linked query declares.
  */
 async function loadFromRoute() {
 	const exampleId = route.query.example;
 	const linkedQuery = route.query.query;
+	const addsDefaultPrefixes = route.query.prefixes === "default";
 	const example =
 		examples.value.find((entry) => {
 			return entry.id === exampleId;
@@ -263,7 +239,7 @@ async function loadFromRoute() {
 	isRdfCollapsed.value = true;
 	if (typeof linkedQuery === "string" && linkedQuery.trim()) {
 		const split = splitPrefixes(linkedQuery);
-		prefixes.value = split.prefixes;
+		prefixes.value = addsDefaultPrefixes ? withCommonPrefixes(split.prefixes) : split.prefixes;
 		query.value = split.query;
 	}
 }

@@ -3,7 +3,7 @@
 import { defineTransformer } from "@nuxt/content";
 import { parseMarkdown } from "@nuxtjs/mdc/runtime";
 
-import { getPlaygroundExample } from "../utils/playground";
+import { getPlaygroundExample, hasDefaultPrefixes } from "../utils/playground";
 
 export interface ParsedStep {
 	id: number;
@@ -53,6 +53,7 @@ const lessonTransformer = defineTransformer({
 			// Opt-in "Run in playground" button, e.g. ```sparql playground=kulturpool
 			const fenceInfo = /```([^\n]*)\n/.exec(header)?.[1] ?? "";
 			const playground = getPlaygroundExample(fenceInfo);
+			const defaultPrefixes = hasDefaultPrefixes(fenceInfo);
 
 			const introText = header.replace(/```[^\n]*\n[\s\S]*?```/, "");
 
@@ -98,6 +99,7 @@ const lessonTransformer = defineTransformer({
 				steps,
 				intro: introText,
 				playground,
+				defaultPrefixes,
 			};
 			return lesson;
 		});

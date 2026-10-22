@@ -25,6 +25,7 @@ export default defineContentConfig({
 							code: z.string().optional(),
 							intro: z.string().optional(),
 							playground: z.string().optional(),
+							defaultPrefixes: z.boolean().optional(),
 						}),
 					),
 					title: z.string().nullable(),

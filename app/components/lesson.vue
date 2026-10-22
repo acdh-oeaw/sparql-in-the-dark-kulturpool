@@ -26,9 +26,9 @@ const activeStepId = ref(1);
 
 /** Only set when the code fence opts in via `playground` (see `getPlaygroundExample`). */
 const playgroundLink = computed(() => {
-	const { code, playground } = props.lessonData;
+	const { code, playground, defaultPrefixes } = props.lessonData;
 	if (!code || playground == null) return undefined;
-	return getPlaygroundLink(code, playground);
+	return getPlaygroundLink(code, playground, defaultPrefixes);
 });
 const handleStepVisible = (id: number) => {
 	activeStepId.value = id;

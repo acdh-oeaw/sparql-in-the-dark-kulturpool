@@ -10,7 +10,11 @@ The queries of the previous chapter don't mention any graph and still find all r
 The first question is which datasets exist:
 
 ```sparql playground=kulturpool
-prefix edm: <http://www.europeana.eu/schemas/edm/>
+PREFIX edm: <http://www.europeana.eu/schemas/edm/>
+PREFIX gnd: <https://d-nb.info/gnd/>
+PREFIX ore: <http://www.openarchives.org/ore/terms/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX id: <https://id.kulturpool.at/>
 
 select distinct ?graph ?provider
 where {
@@ -21,27 +25,28 @@ where {
 }
 ```
 
+
 ---
-<!-- highlight: 5-7 -->
+<!-- highlight: 9-11 -->
 ## Matching Graphs
 `graph ?graph { … }` matches the enclosed pattern in every named graph and binds the name of the graph to `?graph`.
 
 See [Querying the Dataset](https://www.w3.org/TR/sparql12-query/#queryDataset) in the SPARQL 1.2 specification.
 
 ---
-<!-- highlight: 6 -->
+<!-- highlight: 10 -->
 ## A Selective Pattern
 Every aggregation states its `edm:dataProvider`, so this pattern finds every graph that contains a record, along with the name of the provider.
 
 Using a concrete predicate instead of `?s ?p ?o` also keeps the query fast; see the end of this chapter.
 
 ---
-<!-- highlight: 8 -->
+<!-- highlight: 12 -->
 ## Datasets Only
 Each aggregation is part of both its dataset graph and its record graph. The FILTER keeps only graphs whose IRI starts with the dataset prefix.
 
 ---
-<!-- highlight: 3 -->
+<!-- highlight: 7 -->
 ## One Row per Dataset
 DISTINCT collapses the many aggregations of a dataset into a single row. Some providers have more than one dataset, e.g. the Belvedere with `belvedere` and `belvedere-bibliothek`.
 
@@ -49,7 +54,7 @@ DISTINCT collapses the many aggregations of a dataset into a single row. Some pr
 
 Once the name of a dataset is known, a query can be restricted to it:
 
-```sparql playground=kulturpool
+```sparql playground=kulturpool prefixes=default
 select *
 where {
 	graph <https://id.kulturpool.at/dataset/oenb-abo#graph> {
@@ -73,7 +78,7 @@ Any graph pattern can be placed inside the GRAPH clause. Combined with the patte
 
 Record graphs contain everything that belongs to a single record:
 
-```sparql playground=kulturpool
+```sparql playground=kulturpool prefixes=default
 select *
 where {
 	graph <https://id.kulturpool.at/00000001-5cc4-4b18-b68b-a5c2a18337c5/aggregation#graph> {
@@ -118,7 +123,11 @@ Together, DISTINCT and the unrestricted `?s ?p ?o` pattern inside the GRAPH clau
 Restricting the pattern, e.g. to a predicate, helps where possible:
 
 ```sparql playground=kulturpool
-prefix edm: <http://www.europeana.eu/schemas/edm/>
+PREFIX edm: <http://www.europeana.eu/schemas/edm/>
+PREFIX gnd: <https://d-nb.info/gnd/>
+PREFIX ore: <http://www.openarchives.org/ore/terms/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX id: <https://id.kulturpool.at/>
 
 select distinct ?g
 where {
@@ -130,6 +139,6 @@ limit 10
 ```
 
 ---
-<!-- highlight: 6 -->
+<!-- highlight: 10 -->
 ## A Concrete Predicate
 With `edm:aggregatedCHO` in place of a variable, the same query returns in about a second. The query that lists datasets at the beginning of this chapter uses the same trick.

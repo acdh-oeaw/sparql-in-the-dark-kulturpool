@@ -89,6 +89,14 @@ Add `playground` to the info string of the code fence to show a "Run in playgrou
 
 A bare `playground` uses the playground's default data source. `playground=<id>` opens the query with the data source of the matching example in [content/examples](./content/examples), where `<id>` is the example's file name without the number prefix and extension (e.g. `kulturpool` for `1_kulturpool.yml`). Queries without the flag are display-only.
 
+Add `prefixes=default` to declare the playground's common prefixes (`rdf`, `rdfs`, `edm`, `dc`, `dcterms`, `gnd`, `ore`, `skos`, `id`) for the query, so the chapter can show it without a `PREFIX` prologue. Prefixes the query declares itself are kept:
+
+````markdown
+```sparql playground=kulturpool prefixes=default
+select ?cho where { ?aggregation edm:aggregatedCHO ?cho . } limit 10
+```
+````
+
 ### Adding an example
 
 Examples are the data sources and starter queries offered in the playground; they are also what `playground=<id>` in a chapter refers to (see above). To add one, create a YAML file in [content/examples](./content/examples), e.g. `2_my_example.yml`.
